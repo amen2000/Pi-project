@@ -1,0 +1,100 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package entites;
+
+/**
+ *
+ * @author HP OMEN
+ */
+public class avis_evenement {
+    private int avis_id ;
+     private int event_id;
+     private int user_id;
+     private int note;
+     private String commentaire;
+
+    public avis_evenement() {
+    }
+
+    public avis_evenement(int avis_id, int event_id, int user_id, int note, String commentaire) {
+        this.avis_id = avis_id;
+        this.event_id = event_id;
+        this.user_id = user_id;
+        this.note = note;
+        this.commentaire = commentaire;
+    }
+
+     
+    /**
+     * @return the avis_id
+     */
+    public int getAvis_id() {
+        return avis_id;
+    }
+
+    /**
+     * @param avis_id the avis_id to set
+     */
+    public void setAvis_id(int avis_id) {
+        this.avis_id = avis_id;
+    }
+
+    /**
+     * @return the event_id
+     */
+    public int getEvent_id() {
+        return event_id;
+    }
+
+    /**
+     * @param event_id the event_id to set
+     */
+    public void setEvent_id(int event_id) {
+        this.event_id = event_id;
+    }
+
+    /**
+     * @return the user_id
+     */
+    public int getUser_id() {
+        return user_id;
+    }
+
+    /**
+     * @param user_id the user_id to set
+     */
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    /**
+     * @return the note
+     */
+    public int getNote() {
+        return note;
+    }
+
+    /**
+     * @param note the note to set
+     */
+    public void setNote(int note) {
+        this.note = note;
+    }
+
+    /**
+     * @return the commentaire
+     */
+    public String getCommentaire() {
+        return commentaire;
+    }
+
+    /**
+     * @param commentaire the commentaire to set
+     */
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
+    }
+}
