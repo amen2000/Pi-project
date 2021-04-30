@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="586.0" prefWidth="667.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Contact_usController">
+   <children>
+      <Pane layoutX="150.0" prefHeight="586.0" prefWidth="369.0" style="-fx-background-color: #342246;">
+         <children>
+            <HBox alignment="CENTER" layoutX="77.0" layoutY="25.0" maxWidth="-Infinity" prefHeight="72.0" prefWidth="206.0" style="-fx-background-color: transparent;">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Quicksand; -fx-font-weight: 700; -fx-fill: white;" text="BI">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
+                  <FontAwesomeIconView fill="WHITE" glyphName="LASTFM" size="2.4em" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-family: Brush Script MT; -fx-font-weight: bold; -fx-fill: white;" text="Travel">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
+            <Label layoutX="27.0" layoutY="130.0" prefHeight="20.0" prefWidth="43.0" text="Nom" textFill="#f4f5f5">
+               <font>
+                  <Font name="Trebuchet MS Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="22.0" layoutY="179.0" text="Prénom" textFill="#f8f7f7">
+               <font>
+                  <Font name="Trebuchet MS Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="27.0" layoutY="229.0" text="Objet" textFill="#f8f3f3">
+               <font>
+                  <Font name="Trebuchet MS Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="298.0" text="Message" textFill="#fcf6f6">
+               <font>
+                  <Font name="Trebuchet MS Bold" size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="emailinput" layoutX="143.0" layoutY="500.0" prefHeight="25.0" prefWidth="190.0" />
+            <TextField fx:id="messageinput" layoutX="143.0" layoutY="289.0" prefHeight="162.0" prefWidth="190.0" />
+            <TextField fx:id="ojetinput" layoutX="144.0" layoutY="226.0" prefHeight="25.0" prefWidth="190.0" />
+            <TextField fx:id="prenominput" layoutX="144.0" layoutY="177.0" prefHeight="25.0" prefWidth="190.0" />
+            <TextField fx:id="nominput" layoutX="144.0" layoutY="128.0" prefHeight="25.0" prefWidth="190.0" />
+            <Label layoutX="22.0" layoutY="503.0" text="E-mail" textFill="#f8f5f5">
+               <font>
+                  <Font name="Trebuchet MS Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Label fx:id="username" layoutX="570.0" layoutY="12.0" prefHeight="27.0" prefWidth="59.0" text="Client">
+         <font>
+            <Font name="Trebuchet MS" size="19.0" />
+         </font>
+      </Label>
+      <Label layoutX="11.0" layoutY="12.0" prefHeight="63.0" prefWidth="129.0" text="Contact us" textFill="#141414">
+         <font>
+            <Font name="Trebuchet MS Bold Italic" size="24.0" />
+         </font>
+      </Label>
+      <Button fx:id="sendbut" layoutX="570.0" layoutY="354.0" mnemonicParsing="false" text="Send" />
+   </children>
+</AnchorPane>

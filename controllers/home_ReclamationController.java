@@ -46,8 +46,6 @@ import javafx.util.Callback;
 public class home_ReclamationController implements Initializable {
 
     @FXML
-    private VBox vboxdrawer;
-    @FXML
     private Pane pnl_abonnement;
     @FXML
     private TextField txt_Seach;
@@ -60,15 +58,11 @@ public class home_ReclamationController implements Initializable {
     @FXML
     private TableColumn<reclamation, String> col_traite;
     @FXML
-    
     private ImageView Image_rec;
+
     private reclamation_Service service = new reclamation_Service();
     private TableColumn<reclamation, String> col_btnDelet;
-  
-    @FXML
-    private VBox vboxdrawer1;
-    @FXML
-    private ImageView imagechange;
+
     @FXML
     private Label fullName;
     @FXML
@@ -77,27 +71,77 @@ public class home_ReclamationController implements Initializable {
     private Button btn_avis_evenement;
     @FXML
     private Button btn_avis_guide;
+    @FXML
+    private Button btn_contact;
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            search();
-        
+        search();
+
         try {
             refreche();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-       
+
+        btn_avis_evenement.setOnAction((ActionEvent event) -> {
+            try {
+
+                ((Node) (event.getSource())).getScene().getWindow().hide();
+                Parent root = FXMLLoader.load(getClass().getResource("/GUI/back_avis_evenement.fxml"));
+                Scene scene = new Scene(root);
+
+                Stage st = new Stage();
+                st.setScene(scene);
+
+                st.show();
+            } catch (IOException ex) {
+                Logger.getLogger(home_ReclamationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+
+        btn_avis_guide.setOnAction((ActionEvent event) -> {
+            try {
+
+                ((Node) (event.getSource())).getScene().getWindow().hide();
+                Parent root = FXMLLoader.load(getClass().getResource("/GUI/back_avis_guide.fxml"));
+                Scene scene = new Scene(root);
+
+                Stage st = new Stage();
+                st.setScene(scene);
+
+                st.show();
+            } catch (IOException ex) {
+                Logger.getLogger(home_ReclamationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+        btn_contact.setOnAction((ActionEvent event) -> {
+            try {
+
+                ((Node) (event.getSource())).getScene().getWindow().hide();
+                Parent root = FXMLLoader.load(getClass().getResource("/GUI/contactback.fxml"));
+                Scene scene = new Scene(root);
+
+                Stage st = new Stage();
+                st.setScene(scene);
+
+                st.show();
+            } catch (IOException ex) {
+                Logger.getLogger(home_ReclamationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+
         tabview.setEditable(true);
-     
-        
-         col_btnDelet = new TableColumn("Supprimer");
-        
-        
-        
-                    javafx.util.Callback<TableColumn<reclamation, String>, TableCell<reclamation, String>> cellFactory
+
+        col_btnDelet = new TableColumn("Supprimer");
+
+        javafx.util.Callback<TableColumn<reclamation, String>, TableCell<reclamation, String>> cellFactory
                 = new Callback<TableColumn<reclamation, String>, TableCell<reclamation, String>>() {
             public TableCell call(final TableColumn<reclamation, String> param) {
                 final TableCell<reclamation, String> cell = new TableCell<reclamation, String>() {
@@ -112,29 +156,26 @@ public class home_ReclamationController implements Initializable {
                             setText(null);
                         } else {
                             btn.setOnAction(event -> {
-                                
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmer la suppression");
-        alert.setHeaderText(null);
-        alert.setContentText("Etes vous sûr de vouloir supprimer cette reclamation ?");
-        Optional<ButtonType> action = alert.showAndWait();
 
-        if (action.get() == ButtonType.OK) {
-               reclamation u = getTableView().getItems().get(getIndex());
- 
-                                try {
-                                    service.Supprimer(u.getId());
-                                } catch (SQLException ex) {
-                                }
-                               
+                                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                                alert.setTitle("Confirmer la suppression");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Etes vous sûr de vouloir supprimer cette reclamation ?");
+                                Optional<ButtonType> action = alert.showAndWait();
 
-                                try {
-                                    refreche();
-                                } catch (SQLException ex) {
+                                if (action.get() == ButtonType.OK) {
+                                    reclamation u = getTableView().getItems().get(getIndex());
+
+                                    try {
+                                        service.Supprimer(u.getId());
+                                    } catch (SQLException ex) {
+                                    }
+
+                                    try {
+                                        refreche();
+                                    } catch (SQLException ex) {
+                                    }
                                 }
-        }
-                                
-                             
 
                             });
                             setGraphic(btn);
@@ -146,16 +187,12 @@ public class home_ReclamationController implements Initializable {
             }
         };
         col_btnDelet.setCellFactory(cellFactory);
-                tabview.getColumns().add(col_btnDelet);
-            
-      //add btn traite
-    TableColumn  col_btntr = new TableColumn("Traiter");
-    
-            
-        
-        
-        
-                    javafx.util.Callback<TableColumn<reclamation, String>, TableCell<reclamation, String>> cellFactory1
+        tabview.getColumns().add(col_btnDelet);
+
+        //add btn traite
+        TableColumn col_btntr = new TableColumn("Traiter");
+
+        javafx.util.Callback<TableColumn<reclamation, String>, TableCell<reclamation, String>> cellFactory1
                 = new Callback<TableColumn<reclamation, String>, TableCell<reclamation, String>>() {
             public TableCell call(final TableColumn<reclamation, String> param) {
                 final TableCell<reclamation, String> cell = new TableCell<reclamation, String>() {
@@ -171,21 +208,19 @@ public class home_ReclamationController implements Initializable {
                         } else {
                             btntr.setOnAction(event -> {
                                 reclamation u = getTableView().getItems().get(getIndex());
- 
-                                
-                                if (u.getTraite().equals("Traite") ){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        //alert.setTitle("Confirmer la suppression");
-        alert.setHeaderText(null);
-        alert.setContentText("Deja traitée");
-        alert.showAndWait();
+
+                                if (u.getTraite().equals("Traite")) {
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    //alert.setTitle("Confirmer la suppression");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText("Deja traitée");
+                                    alert.showAndWait();
                                 }
-                                        
+
                                 try {
                                     service.Modifier(u, u.getId());
                                 } catch (SQLException ex) {
                                 }
-                               
 
                                 try {
                                     refreche();
@@ -193,7 +228,7 @@ public class home_ReclamationController implements Initializable {
                                 }
 
                             });
-                           
+
                             setGraphic(btntr);
                             setText(null);
                         }
@@ -203,18 +238,16 @@ public class home_ReclamationController implements Initializable {
             }
         };
         col_btntr.setCellFactory(cellFactory1);
-                tabview.getColumns().add(col_btntr);
-      //end btn traite
-        
+        tabview.getColumns().add(col_btntr);
+        //end btn traite
+
         // TODO
-    }    
-
-
+    }
 
     public void search() {
         txt_Seach.setOnKeyReleased(e
                 -> {
-            if (txt_Seach.getText().equals("") ) {
+            if (txt_Seach.getText().equals("")) {
 
                 try {
                     refreche();
@@ -224,44 +257,34 @@ public class home_ReclamationController implements Initializable {
             } else {
 
                 try {
-        
-          col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
-  col_Contenu.setCellValueFactory(new PropertyValueFactory<>("contenu"));
 
-  col_traite.setCellValueFactory(new PropertyValueFactory<>("traite"));
-   
-      
-  
-      
-        tabview.getItems().clear();
+                    col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+                    col_Contenu.setCellValueFactory(new PropertyValueFactory<>("contenu"));
 
-         tabview.getItems().clear();
+                    col_traite.setCellValueFactory(new PropertyValueFactory<>("traite"));
+
+                    tabview.getItems().clear();
+
+                    tabview.getItems().clear();
 
                     tabview.setItems(service.serach(txt_Seach.getText()));
 
                 } catch (SQLException ex) {
                 }
-        
 
             }
         }
         );
 
     }
-      
-  
-    
-   
-     public void refreche() throws SQLException {
 
-        
-          col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
-  col_Contenu.setCellValueFactory(new PropertyValueFactory<>("contenu"));
+    public void refreche() throws SQLException {
 
-  col_traite.setCellValueFactory(new PropertyValueFactory<>("traite"));
-   
+        col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        col_Contenu.setCellValueFactory(new PropertyValueFactory<>("contenu"));
 
-      
+        col_traite.setCellValueFactory(new PropertyValueFactory<>("traite"));
+
         tabview.getItems().clear();
 
         tabview.setItems(service.Affichertout());
@@ -270,25 +293,8 @@ public class home_ReclamationController implements Initializable {
 
     @FXML
     private void handleClicks(ActionEvent event) {
-    }
-
-    @FXML
-    private void ajouterAvisEvenement(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/GUI/home_avis_evenement.fxml"));
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    @FXML
-    private void ajouterAvisGuide(ActionEvent event) {
-               try {
-            Parent root = FXMLLoader.load(getClass().getResource("/GUI/home_avis_guide.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/GUI/Home_Reclamation.fxml"));
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
@@ -300,7 +306,7 @@ public class home_ReclamationController implements Initializable {
 
     @FXML
     private void frontEnd(ActionEvent event) {
-                                    try {
+        try {
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/Front.fxml"));
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -311,6 +317,30 @@ public class home_ReclamationController implements Initializable {
         }
     }
 
-   
-    
+    @FXML
+    private void ajouterAvisEvenementBack(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/GUI/back_avis_evenement.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void ajouterAvisGuideBack(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/GUI/back_avis_guide.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
 }

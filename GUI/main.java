@@ -39,7 +39,7 @@ public class main extends Application {
         avis_Service avc = new avis_Service();
         avis_evenement av_event = new avis_evenement(1, 5, 11, 3, "avis event5");
         avis_guide avg = new avis_guide(30, 9, 14, 8, "test");
-         avc.Ajouter_avis_event(av_event);                      //add avis event
+         //avc.Ajouter_avis_event(av_event);                      //add avis event
         //avc.Supprimer_avis_event(16);                          //delete avis event
         //avc.Modifier_note_avis_event(7, 20);                   //modifier note avis event
        

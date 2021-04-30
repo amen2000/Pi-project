@@ -15,7 +15,8 @@ public class avis_evenement {
      private int user_id;
      private int note;
      private String commentaire;
-
+private int likes;
+private int dislikes;
     public avis_evenement() {
     }
 
@@ -96,5 +97,33 @@ public class avis_evenement {
      */
     public void setCommentaire(String commentaire) {
         this.commentaire = commentaire;
+    }
+
+    /**
+     * @return the likes
+     */
+    public int getLikes() {
+        return likes;
+    }
+
+    /**
+     * @param likes the likes to set
+     */
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    /**
+     * @return the dislikes
+     */
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    /**
+     * @param dislikes the dislikes to set
+     */
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 }

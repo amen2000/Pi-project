@@ -14,7 +14,9 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import entites.BadWords;
+import entites.SmsSender;
 import entites.reclamation;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -47,6 +49,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 /**
@@ -61,28 +65,39 @@ public class ReclamationCrontroller implements Initializable {
     @FXML
     private TableView<reclamation> tab_Reclamation;
     @FXML
-     private TableColumn<reclamation, Integer> col_id_rec;
+    private TableColumn<reclamation, Integer> col_id_rec;
     @FXML
     private TableColumn<reclamation, String> col_contenu_rec;
-    
+
     @FXML
     private TableColumn<reclamation, String> col_Traite_rec;
     @FXML
     private Button btn_ajout_reclamation;
     @FXML
     private TextArea txt_contenu_reclamation;
-    
-   
-   
+
     @FXML
     private Button pdf;
-   
+
     @FXML
     private Label username;
     reclamation_Service service_reclamation = new reclamation_Service();
-        private String nomImage_Reclamation = "";
+    private String nomImage_Reclamation = "";
     @FXML
     private ImageView Image_Reclamation;
+    @FXML
+    private Button contact_but;
+    @FXML
+    private Button mapbut;
+    @FXML
+    private Label fullName;
+    @FXML
+    private Button btn_avis_evenement;
+    @FXML
+    private Button btn_avis_guide;
+    @FXML
+    private Button btn_avis_evenement1;
+
     /**
      * Initializes the controller class.
      */
@@ -99,11 +114,40 @@ public class ReclamationCrontroller implements Initializable {
         } catch (Exception ex) {
             Logger.getLogger(ReclamationCrontroller.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }    
+
+        mapbut.setOnAction((ActionEvent event) -> {
+            WebView webView = new WebView();
+            WebEngine webEngine = webView.getEngine();
+            webEngine.load(getClass().getResource("Maps.html").toString());
+            Scene scene = new Scene(webView, 600, 600);
+            Stage primaryStage = new Stage();
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Visit us");
+            primaryStage.show();
+
+        });
+
+        contact_but.setOnAction((ActionEvent event) -> {
+            try {
+
+                ((Node) (event.getSource())).getScene().getWindow().hide();
+                Parent root = FXMLLoader.load(getClass().getResource("/GUI/Contact_us.fxml"));
+                Scene scene = new Scene(root);
+
+                Stage st = new Stage();
+                st.setScene(scene);
+
+                st.show();
+            } catch (IOException ex) {
+                Logger.getLogger(home_ReclamationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+    }
 
     @FXML
     private void ajouter_reclamation(ActionEvent event) throws Exception {
-                BadWords.loadConfigs();
+        BadWords.loadConfigs();
 
         {
 
@@ -114,67 +158,66 @@ public class ReclamationCrontroller implements Initializable {
 
                 AlertDialog.showNotification("Error !", "cette application n'autorise pas ces termes", AlertDialog.image_cross);
 
-            }  else {
-
-
+            } else {
 
                 String traite = "Non Traite";
-                
+
 // remplace 1 b id user session
                 reclamation rec = new reclamation(0, 1, txt_contenu_reclamation.getText(), traite);
 
                 service_reclamation.Ajouter(rec);
-              
 
-               
                 refrech_reclamation();
 
-                AlertDialog.showNotification("Recalamtion", "Reclamation ajouter", AlertDialog.image_checked);
+                AlertDialog.showNotification("Recalamtion", "Reclamation ajoutée", AlertDialog.image_checked);
 
+                SmsSender s= new SmsSender() ;
+                 s.send("","b");
+               
             }
 
         }
     }
-    
-
-    
 
     @FXML
     private void fairepdf_reclalamtion(ActionEvent event) {
-         Document document = new Document();
+//        
+//                    SmsSender s= new SmsSender() ;
+//                    s.send("pdf","b");
+        
+        Document document = new Document();
         try {
 
             PdfWriter.getInstance(document, new FileOutputStream("reclamation_user.pdf"));
-            document.open();
-            Paragraph ph1 = new Paragraph("Bienvenue !");
-            Paragraph ph2 = new Paragraph(".");
-            PdfPTable table = new PdfPTable(4);
 
-       
+            document.open();
+
+            Paragraph ph1 = new Paragraph("Reclamation !");
+             Paragraph ph2 = new Paragraph(".");
+  
+            PdfPTable table = new PdfPTable(4);
 
             //On créer l'objet cellule.
             PdfPCell cell;
 
             //contenu du tableau.
-                table.addCell("Id : ");
+            table.addCell("Id : ");
             table.addCell("Contenu : ");
             table.addCell("Id utilisateur : ");
             table.addCell("Etat :");
-            
+
 // remplace 1  b session id
             service_reclamation.Affichertout_user(1).forEach(e
                     -> {
-                String id=""+e.getId();
+                String id = "" + e.getId();
                 table.addCell(id);
 
                 table.setHorizontalAlignment(Element.ALIGN_CENTER);
 
                 table.addCell(String.valueOf(e.getContenu()));
-                String idu=""+e.getIdu();
+                String idu = "" + e.getIdu();
                 table.addCell(String.valueOf(idu));
                 table.addCell(e.getTraite());
-
-                
 
                 //Scale to new height and new width of image
                 //Add to document
@@ -183,23 +226,43 @@ public class ReclamationCrontroller implements Initializable {
             document.add(ph1);
             document.add(ph2);
             document.add(table);
-            document.addAuthor("reclamation pdf");
+            
             AlertDialog.showNotification("Creation PDF ", "Votre fichier PDF a ete cree avec success", AlertDialog.image_checked);
+
+            try {
+                File file = new File("reclamation_user.pdf");
+                if (!Desktop.isDesktopSupported())//check if Desktop is supported by Platform or not  
+                {
+                    System.out.println("not supported");
+                    return;
+                }
+                Desktop desktop = Desktop.getDesktop();
+                if (file.exists()) //checks file exists or not  
+                {
+                    desktop.open(file);              //opens the specified file  
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         } catch (Exception e) {
             System.out.println(e);
         }
+
         document.close();
+        
+                
+                
+                
 
     }
-      private void refrech_reclamation() throws Exception {
+
+    private void refrech_reclamation() throws Exception {
 
         col_id_rec.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         col_contenu_rec.setCellValueFactory(new PropertyValueFactory<>("contenu"));
 
-        
-
-       
         col_Traite_rec.setCellValueFactory(new PropertyValueFactory<>("traite"));
         tab_Reclamation.getItems().clear();
 // 1 ttbdl b session id user
@@ -209,7 +272,7 @@ public class ReclamationCrontroller implements Initializable {
 
     @FXML
     private void afficherAvisEvenement(ActionEvent event) {
-           try {
+        try {
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/home_avis_evenement.fxml"));
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -222,7 +285,7 @@ public class ReclamationCrontroller implements Initializable {
 
     @FXML
     private void afficherAvisGuide(ActionEvent event) {
-                   try {
+        try {
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/home_avis_guide.fxml"));
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -235,7 +298,7 @@ public class ReclamationCrontroller implements Initializable {
 
     @FXML
     private void backEnd(ActionEvent event) {
-                          try {
+        try {
             Parent root = FXMLLoader.load(getClass().getResource("/GUI/Home_Reclamation.fxml"));
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -246,7 +309,7 @@ public class ReclamationCrontroller implements Initializable {
         }
     }
 
-        
 
- 
+
+
 }

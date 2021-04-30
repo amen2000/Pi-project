@@ -40,6 +40,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -84,13 +86,74 @@ public class AvisEvenementController implements Initializable {
     ObservableList<avis_evenement> avis_event = FXCollections.observableArrayList();
     @FXML
     private TableColumn<?, ?> noteCol;
+     @FXML
+    private TableColumn<avis_evenement, Integer> likecol;
+    @FXML
+    private TableColumn<avis_evenement, Integer> dislikecol;
+    @FXML
+    private Button refreshbut;
+    @FXML
+    private Label fullName;
+    @FXML
+    private Button btn_recclamation;
+    @FXML
+    private Button btn_avis_evenement;
+    @FXML
+    private Button btn_avis_guide;
+    @FXML
+    private Button contact_but;
+    @FXML
+    private Button mapbut;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    
+             mapbut.setOnAction((ActionEvent event) -> {
+            WebView webView = new WebView();
+            WebEngine webEngine = webView.getEngine();
+            webEngine.load(getClass().getResource("Maps.html").toString());
+            Scene scene = new Scene(webView, 600, 600);
+            Stage primaryStage = new Stage();
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Visit us");
+            primaryStage.show();
+
+        });
+
+        contact_but.setOnAction((ActionEvent event) -> {
+            try {
+
+                ((Node) (event.getSource())).getScene().getWindow().hide();
+                Parent root = FXMLLoader.load(getClass().getResource("/GUI/Contact_us.fxml"));
+                Scene scene = new Scene(root);
+
+                Stage st = new Stage();
+                st.setScene(scene);
+
+                st.show();
+            } catch (IOException ex) {
+                Logger.getLogger(home_ReclamationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
+    refreshbut.setOnAction((ActionEvent event) -> { try {
+            
+            ((Node)(event.getSource())).getScene().getWindow().hide();
+            Parent root = FXMLLoader.load(getClass().getResource("/GUI/home_avis_evenement.fxml"));
+                 Scene scene = new Scene(root);
+                 
+        Stage st=new Stage();
+        st.setScene(scene);
+        
+        st.show();
+            } catch (IOException ex) {
+                Logger.getLogger(home_ReclamationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+          
+          
+ });
         try {
             List<avis_evenement> listAvisEvenement = service.Affichertout_user_avis_event();
             
@@ -104,7 +167,8 @@ public class AvisEvenementController implements Initializable {
             col_id_rec.setCellValueFactory(new PropertyValueFactory<>("avis_id"));
             col_contenu_rec.setCellValueFactory(new PropertyValueFactory<>("commentaire"));
              noteCol.setCellValueFactory(new PropertyValueFactory<>("note"));
-            
+              likecol.setCellValueFactory(new PropertyValueFactory<>("likes"));
+            dislikecol.setCellValueFactory(new PropertyValueFactory<>("dislikes"));
             tab_Reclamation.setItems(avis_event);
             System.out.println(avis_event);
         } catch (SQLException ex) {
@@ -113,6 +177,113 @@ public class AvisEvenementController implements Initializable {
         
          setEtoiles(0);
         
+          //btn like
+     TableColumn  col_btnDelet = new TableColumn("");
+        
+        
+        
+                    javafx.util.Callback<TableColumn<avis_evenement, String>, TableCell<avis_evenement, String>> cellFactory
+                = new Callback<TableColumn<avis_evenement, String>, TableCell<avis_evenement, String>>() {
+            public TableCell call(final TableColumn<avis_evenement, String> param) {
+                final TableCell<avis_evenement, String> cell = new TableCell<avis_evenement, String>() {
+
+                    final Button btn = new Button("");
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            btn.setOnAction(event -> {
+                                
+     
+
+        
+               avis_evenement u = getTableView().getItems().get(getIndex());
+ 
+               service.update_avis_event_likes(u.getAvis_id(), u.getLikes()+1);
+               System.out.println("id supp ="+u.getAvis_id());
+                                try {
+                                    refreche();
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(AvisEvenementController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                             
+
+                            });
+                            setGraphic(btn);
+                            setText(null);
+                            
+                            ImageView btnimg = new ImageView("images/like.png");
+                        btnimg.setFitWidth(30);
+                        btnimg.setFitHeight(30);
+                        btn.setGraphic(btnimg);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        col_btnDelet.setCellFactory(cellFactory);
+               tab_Reclamation.getColumns().add(col_btnDelet);
+       //btn like end
+         
+       //btn dislike
+     TableColumn  col_btnDelet1 = new TableColumn("");
+        
+        
+        
+                    javafx.util.Callback<TableColumn<avis_evenement, String>, TableCell<avis_evenement, String>> cellFactory1
+                = new Callback<TableColumn<avis_evenement, String>, TableCell<avis_evenement, String>>() {
+            public TableCell call(final TableColumn<avis_evenement, String> param) {
+                final TableCell<avis_evenement, String> cell = new TableCell<avis_evenement, String>() {
+
+                    final Button btn = new Button("");
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                            setText(null);
+                        } else {
+                            btn.setOnAction(event -> {
+                                
+     
+
+        
+               avis_evenement u = getTableView().getItems().get(getIndex());
+ 
+               service.update_avis_event_dislikes(u.getAvis_id(), u.getDislikes()+1);
+               System.out.println("id supp ="+u.getAvis_id());
+                                try {
+                                    refreche();
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(AvisEvenementController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                                 
+                            });
+                            setGraphic(btn);
+                            setText(null);
+                            
+                            ImageView btnimg = new ImageView("images/dislike.png");
+                        btnimg.setFitWidth(30);
+                        btnimg.setFitHeight(30);
+                        btn.setGraphic(btnimg);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        col_btnDelet1.setCellFactory(cellFactory1);
+               tab_Reclamation.getColumns().add(col_btnDelet1);
+       //btn dislike end
+       
     }    
     
     
@@ -191,7 +362,6 @@ public class AvisEvenementController implements Initializable {
         }
     }
 
-
     @FXML
     private void afficherAvisEvenement(ActionEvent event) {
                          try {
@@ -243,4 +413,21 @@ public class AvisEvenementController implements Initializable {
             System.out.println(ex.getMessage());
         }
     }
+  public void refreche() throws SQLException {
+
+        
+       
+   
+tab_Reclamation.getItems().clear();
+      
+   
+        tab_Reclamation.setItems(service.Affichertout_user_avis_event());
+     tab_Reclamation.getItems().clear();
+      
+   
+        tab_Reclamation.setItems(service.Affichertout_user_avis_event());
+
+    }
+
+
 }

@@ -8,6 +8,7 @@ package Service;
 
 import IService.IService;
 import Utils.MyConnexion;
+import entites.contactus;
 
 import entites.reclamation;
 import java.sql.Connection;
@@ -125,4 +126,43 @@ public class reclamation_Service implements IService<reclamation> {
 
         return list;
     }
+    
+     public void Ajoutercontact(contactus t) throws SQLException {
+
+        try {
+            String requete = "INSERT INTO `contactez_nous`( `nom`, `prenom`, `email`, `objet`, `message`) VALUES (?,?,?,?,?)";
+            PreparedStatement pst = c.prepareStatement(requete);
+            pst.setString(1, t.getNom());
+            pst.setString(2, t.getPrenom());
+   
+            pst.setString(3, t.getEmail());
+             pst.setString(4, t.getObjet()); 
+             pst.setString(5, t.getMessage());
+             
+            pst.execute();
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+     
+      public ObservableList<contactus> Affichertout_contacts() throws SQLException {
+        ObservableList<contactus> list = FXCollections.observableArrayList();
+        String requete = "SELECT * FROM `contactez_nous`" ;
+        try {
+            PreparedStatement ps = c.prepareStatement(requete);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new contactus(rs.getString("nom"), rs.getString("prenom"), rs.getString("email"), rs.getString("objet"), rs.getString("message")));
+
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+
+    }
+    
 }
